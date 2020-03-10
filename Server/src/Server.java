@@ -1,12 +1,16 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class Server {
-    public static void main(String[] args) {
-        try (ServerSocket server = new ServerSocket(8000)) {
 
-            System.out.println("Server started!");
+    private final static Logger LOGGER = Logger.getLogger(Server.class.getName());
+
+    public static void main(String[] args) {
+        try (ServerSocket server = new ServerSocket(8080)) {
+
+            LOGGER.info("Server started");
 
             while (true) {
                 Socket socket = server.accept();
@@ -18,15 +22,18 @@ public class Server {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                         String request = reader.readLine();
-                        System.out.println("Request : " + request);
+                        LOGGER.info("Received Request From Client");
+
                         String response = "Weather is : " + request.length() + " C";
                         Thread.sleep(3000);
-                        System.out.println("Response : " + response);
+
+                        LOGGER.info("Send Response To Client");
                         bufferedWriter.write(response);
                         bufferedWriter.newLine();
                         bufferedWriter.flush();
+                        LOGGER.info("Close Connection");
                     } catch (Exception e) {
-                        System.out.println("?");
+                        e.printStackTrace();
                     }
                 }).start();
             }
